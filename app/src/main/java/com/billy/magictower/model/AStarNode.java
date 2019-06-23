@@ -1,10 +1,12 @@
 package com.billy.magictower.model;
 
+import android.support.annotation.Nullable;
+
 public class AStarNode {
 
     private int i,j;
     private boolean walkable;
-    private int gCost,hCost;
+    private int gCost = 0,hCost = 0;
     private AStarNode parent;
 
     public AStarNode() {
@@ -62,6 +64,13 @@ public class AStarNode {
 
     public int gethCost() {
         return hCost;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj instanceof AStarNode)
+            return ((AStarNode) obj).i == i && ((AStarNode) obj).j==j;
+        return false;
     }
 
     public void sethCost(int hCost) {

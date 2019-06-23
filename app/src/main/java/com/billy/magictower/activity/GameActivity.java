@@ -60,7 +60,7 @@ public class GameActivity extends MTBaseActivity {
 
                     if(!heroController.goToTarget(widthIndex,heightIndex))
                     {
-                        ApplicationUtil.toast(GameActivity.this,"地方不可到达");
+                        ApplicationUtil.log("__TAG__","地方不可到达");
                     }
 
                 }

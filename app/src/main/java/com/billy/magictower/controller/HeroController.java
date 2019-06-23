@@ -7,7 +7,6 @@ import com.billy.magictower.model.HeroAttribute;
 import com.billy.magictower.util.ApplicationUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class HeroController {
@@ -16,12 +15,10 @@ public class HeroController {
     private FloorController floorController;
 
     private int heroI,heroJ;
-    private  List<AStarNode> neighbourList;
 
     public HeroController(FloorController floorController)
     {
         this.floorController = floorController;
-        neighbourList = new ArrayList<>();
         findHeroLocation();
     }
 
@@ -60,44 +57,45 @@ public class HeroController {
 
     private List<AStarNode> findPath(AStarNode start, AStarNode end)
     {
-        List<AStarNode> road = null;
 
         List<AStarNode> openSet = new ArrayList<>();
-        HashSet<AStarNode> closeSet = new HashSet<>();
+        List<AStarNode> closeSet = new ArrayList<>();
 
         openSet.add(start);
         while (!openSet.isEmpty())
         {
-            AStarNode currentNode = openSet.get(0);
+            int index = 0;
+            AStarNode currentNode = openSet.get(index);
             for(int i = 1;i < openSet.size();i++)
             {
                 if(currentNode.getfCost() > openSet.get(i).getfCost() ||
                         (currentNode.getfCost() == openSet.get(i).getfCost() && openSet.get(i).gethCost() < currentNode.gethCost()))
                 {
                     currentNode = openSet.get(i);
+                    index = i;
                 }
             }
 
-            openSet.remove(currentNode);
+            openSet.remove(index);
             closeSet.add(currentNode);
 
             if(currentNode.isTheSame(end))
             {
-                return getRoad(start,end);
+                return getRoad(start,currentNode);
             }
 
             for(AStarNode node : getNeighbour(currentNode))
             {
-                if(!node.isWalkable() || closeSet.contains(node))
+                if(!node.isWalkable() || containsNode(closeSet,node))
                     continue;
 
                 int newCost = currentNode.getgCost() + getDistance(currentNode,end);
-                if(newCost < node.getgCost() || !openSet.contains(node))
+                if(newCost < node.getgCost() || !containsNode(openSet,node))
                 {
                     node.setgCost(newCost);
                     node.sethCost(getDistance(node,end));
                     node.setParent(currentNode);
-                    if(!openSet.contains(node))
+                    if(!containsNode(openSet,node))
                         openSet.add(node);
                 }
             }
@@ -108,11 +106,23 @@ public class HeroController {
         return null;
     }
 
+    private boolean containsNode(List<AStarNode> closeSet,AStarNode target)
+    {
+        for(AStarNode node : closeSet)
+        {
+            if(node.isTheSame(target))
+                return true;
+        }
+
+        return false;
+    }
+
+
     private List<AStarNode> getRoad(AStarNode start, AStarNode end)
     {
         List<AStarNode> road = new ArrayList<>();
         AStarNode cur = end;
-        while(!cur.isTheSame(end))
+        while(!cur.isTheSame(start))
         {
             road.add(cur);
             cur = cur.getParent();
@@ -134,7 +144,7 @@ public class HeroController {
 
     private List<AStarNode> getNeighbour(AStarNode node)
     {
-        neighbourList.clear();
+        List<AStarNode> neighbourList = new ArrayList<>();
         for(int i = -1;i <= 1;i++)
         {
             for(int j = -1;j <= 1;j++)
