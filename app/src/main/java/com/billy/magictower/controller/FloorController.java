@@ -4,7 +4,7 @@ import android.os.Environment;
 
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.activity.MTBaseActivity;
-import com.billy.magictower.entity.FloorMap;
+import com.billy.magictower.model.FloorMap;
 import com.billy.magictower.util.ApplicationUtil;
 import com.billy.magictower.util.JsonUtil;
 

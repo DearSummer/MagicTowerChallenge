@@ -1,7 +1,7 @@
 package com.billy.magictower.util;
 
 
-import com.billy.magictower.entity.FloorMap;
+import com.billy.magictower.model.FloorMap;
 import com.google.gson.Gson;
 
 public class JsonUtil {

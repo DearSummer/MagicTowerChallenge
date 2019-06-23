@@ -1,4 +1,4 @@
-package com.billy.magictower.entity;
+package com.billy.magictower.model;
 
 public class HeroAttribute {
     private int hp;

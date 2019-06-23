@@ -11,7 +11,7 @@ import com.billy.magictower.R;
 import com.billy.magictower.activity.MTBaseActivity;
 import com.billy.magictower.controller.FloorController;
 import com.billy.magictower.controller.HeroController;
-import com.billy.magictower.entity.FloorMap;
+import com.billy.magictower.model.FloorMap;
 import com.billy.magictower.util.ApplicationUtil;
 
 import org.jetbrains.annotations.NotNull;

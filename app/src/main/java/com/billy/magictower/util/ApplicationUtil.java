@@ -2,6 +2,7 @@ package com.billy.magictower.util;
 
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.billy.magictower.activity.MTBaseActivity;
 
@@ -40,6 +41,10 @@ public class ApplicationUtil {
     public static <T> void log(String tag,T msg)
     {
         Log.d(tag, String.valueOf(msg));
+    }
+
+    public static void toast( MTBaseActivity context, final String msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
 }
