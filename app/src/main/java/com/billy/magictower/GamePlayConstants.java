@@ -50,6 +50,9 @@ public class GamePlayConstants {
         public final static int RED_SLIME = 17;
         public final static int HERO = 99;
 
+        public final static int MONSTER_ID_BEGIN = 12;
+        public final static int MONSTER_ID_END = 80;
+
         public final static List<Integer> heroForward = new ArrayList<Integer>(){{
            add(0);
            add(1);
@@ -103,5 +106,7 @@ public class GamePlayConstants {
         public final static int NO_BLUE_KEY = 3;
         public final static int CANT_REACH = 4;
         public final static int MOVE_FLOOR = 5;
+        public final static int FIGHT_DIE = 6;
+        public final static int FIGHT_SUCCESS = 7;
     }
 }

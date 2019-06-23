@@ -3,6 +3,7 @@ package com.billy.magictower.util;
 
 import com.billy.magictower.model.FloorMap;
 import com.billy.magictower.model.HeroAttribute;
+import com.billy.magictower.model.Monster;
 import com.google.gson.Gson;
 
 public class JsonUtil {
@@ -15,6 +16,10 @@ public class JsonUtil {
     public static HeroAttribute getHeroAttribute(String value)
     {
         return gson.fromJson(value,HeroAttribute.class);
+    }
+    public static Monster[] getMonster(String value)
+    {
+        return gson.fromJson(value,Monster[].class);
     }
 
 

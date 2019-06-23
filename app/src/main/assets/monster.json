@@ -1,0 +1,56 @@
+[
+  {
+    "id": 17,
+    "monster": {
+      "hp": 45,
+      "atk": 20,
+      "def": 2,
+      "coin": 2
+    }
+  },
+  {
+    "id": 16,
+    "monster": {
+      "hp": 35,
+      "atk": 18,
+      "def": 1,
+      "coin": 1
+    }
+  },
+  {
+    "id": 12,
+    "monster": {
+      "hp": 50,
+      "atk": 42,
+      "def": 6,
+      "coin": 6
+    }
+  },
+  {
+    "id": 13,
+    "monster": {
+      "hp": 55,
+      "atk": 52,
+      "def": 12,
+      "coin": 8
+    }
+  },
+  {
+    "id": 14,
+    "monster": {
+      "hp": 60,
+      "atk": 32,
+      "def": 8,
+      "coin": 5
+    }
+  },
+  {
+    "id": 15,
+    "monster": {
+      "hp": 35,
+      "atk": 38,
+      "def": 3,
+      "coin": 3
+    }
+  }
+]

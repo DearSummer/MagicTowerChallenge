@@ -7,7 +7,6 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
@@ -65,6 +64,8 @@ public class GameActivity extends MTBaseActivity {
                         ApplicationUtil.toast(GameActivity.this, "此乃无法到达之地");
                     else if (value == GamePlayConstants.MoveStatusCode.NO_YELLOW_KEY)
                         ApplicationUtil.toast(GameActivity.this, "黄钥匙不足");
+                    else if(value == GamePlayConstants.MoveStatusCode.FIGHT_DIE)
+                        ApplicationUtil.toast(GameActivity.this,"YOU · DIE");
 
                 }
 

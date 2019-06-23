@@ -1,10 +1,14 @@
 package com.billy.magictower.controller;
 
+import android.annotation.SuppressLint;
+
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.activity.MTBaseActivity;
 import com.billy.magictower.model.AStarNode;
 import com.billy.magictower.model.FloorMap;
 import com.billy.magictower.model.HeroAttribute;
+import com.billy.magictower.model.Monster;
+import com.billy.magictower.model.MonsterAttribute;
 import com.billy.magictower.util.ApplicationUtil;
 import com.billy.magictower.util.JsonUtil;
 
@@ -12,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class HeroController {
@@ -20,6 +26,8 @@ public class HeroController {
 
     private HeroAttribute heroAttribute;
     private FloorController floorController;
+
+    private Map<Integer, MonsterAttribute> monsterMap;
 
     private int heroSpriteId = 0;
     private Random random;
@@ -31,7 +39,41 @@ public class HeroController {
         this.floorController = floorController;
         findHeroLocation();
         newGame(context);
+        initMonsterAttribute(context);
         random = new Random();
+    }
+
+    @SuppressLint("UseSparseArrays")
+    private void initMonsterAttribute(MTBaseActivity context)
+    {
+        InputStream is = null;
+        try {
+            is = context.getAssets().open("monster.json");
+            StringBuilder stringBuffer = new StringBuilder();
+            byte[] buf = new byte[1024];
+            int byteCount;
+            while ( (byteCount = is.read(buf)) != -1)
+            {
+                stringBuffer.append(new String(buf,0,byteCount));
+            }
+
+            Monster[] monster = JsonUtil.getMonster(stringBuffer.toString());
+            monsterMap = new HashMap<>();
+            for (Monster monster1 : monster) {
+                monsterMap.put(monster1.getId(), monster1.getMonster());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void newGame(MTBaseActivity context)
@@ -124,6 +166,13 @@ public class HeroController {
                 return GamePlayConstants.MoveStatusCode.MOVE_FLOOR;
         }
 
+        if(value >= GamePlayConstants.GameValueConstants.MONSTER_ID_BEGIN &&
+            value < GamePlayConstants.GameValueConstants.MONSTER_ID_END)
+        {
+            if(fight(value) != GamePlayConstants.MoveStatusCode.FIGHT_SUCCESS)
+                return GamePlayConstants.MoveStatusCode.FIGHT_DIE;
+        }
+
         if(i - heroI > 0)
             heroSpriteId = GamePlayConstants.GameValueConstants.heroRight.get(random.nextInt(3));
         else if(i - heroI < 0)
@@ -139,6 +188,29 @@ public class HeroController {
         heroI = i;
 
         return GamePlayConstants.MoveStatusCode.MOVE_SUCCESS_CODE;
+    }
+
+    private int fight(int monster)
+    {
+        MonsterAttribute enemy = monsterMap.get(monster);
+        assert enemy != null;
+        while(enemy.getHp() <= 0)
+        {
+            int heroDamage = heroAttribute.getAtk() - enemy.getDef();
+            if(heroDamage < 0)
+                heroDamage = 0;
+            enemy.setHp(enemy.getHp() - heroDamage);
+
+            int enemyDamage = enemy.getAtk() - heroAttribute.getDef();
+            if(enemyDamage < 0)
+                enemyDamage = 0;
+            heroAttribute.setHp(heroAttribute.getHp() - enemyDamage);
+
+            if(heroAttribute.getHp() < 0)
+                return GamePlayConstants.MoveStatusCode.FIGHT_DIE;
+
+        }
+        return GamePlayConstants.MoveStatusCode.FIGHT_SUCCESS;
     }
 
 
