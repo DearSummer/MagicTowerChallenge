@@ -3,34 +3,59 @@ package com.billy.magictower.view;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
 import com.billy.magictower.activity.MTBaseActivity;
 import com.billy.magictower.entity.FloorMap;
+import com.billy.magictower.util.ApplicationUtil;
 import com.billy.magictower.util.JsonUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class FloorView implements IGameView {
 
-    private int level;
-
-    private Bitmap ground,wall,yellowDoor;
+    private int level = 0;
     private FloorMap[] localMap;
 
-    public FloorView(MTBaseActivity context)
+    private Bitmap[] sprite;
+    private Matrix matrix;
+
+    public FloorView(MTBaseActivity context,int width)
     {
-        Bitmap map = BitmapFactory.decodeResource(context.getResources(), R.drawable.map16);
-        ground = Bitmap.createBitmap(map,0,0,
-                GamePlayConstants.GameResContants.MAP_META_WIDTH, GamePlayConstants.GameResContants.MAP_META_HEIGHT);
-        wall = Bitmap.createBitmap(map, GamePlayConstants.GameResContants.MAP_META_WIDTH,0 ,
-                GamePlayConstants.GameResContants.MAP_META_WIDTH, GamePlayConstants.GameResContants.MAP_META_HEIGHT);
-        yellowDoor = Bitmap.createBitmap(map,
-                GamePlayConstants.GameResContants.MAP_META_WIDTH, GamePlayConstants.GameResContants.MAP_META_HEIGHT,
-                GamePlayConstants.GameResContants.MAP_META_WIDTH, GamePlayConstants.GameResContants.MAP_META_HEIGHT);
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inScaled = false;
+        Bitmap map = BitmapFactory.decodeResource(context.getResources(),R.drawable.map16,opts);
+        ApplicationUtil.log("width",map.getWidth());
+        ApplicationUtil.log("height",map.getHeight());
+
+
+        sprite = new Bitmap[GamePlayConstants.GameResConstants.MAP_SPRITE_HEIGHT_COUNT *
+                                GamePlayConstants.GameResConstants.MAP_META_WIDTH];
+
+        matrix = new Matrix();
+        matrix.setScale(
+                ((float)width / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_WIDTH,
+                ((float)width / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_HEIGHT);
+        ApplicationUtil.log("__MATRIX__",matrix.toString());
+        for(int i = 0; i < GamePlayConstants.GameResConstants.MAP_SPRITE_HEIGHT_COUNT; i++)
+        {
+            for(int j = 0; j < GamePlayConstants.GameResConstants.MAP_SPRITE_WIDTH_COUNT; j++)
+            {
+                sprite[i * GamePlayConstants.GameResConstants.MAP_SPRITE_WIDTH_COUNT + j] =
+                        Bitmap.createBitmap(map,
+                                j * GamePlayConstants.GameResConstants.MAP_META_WIDTH,
+                                i* GamePlayConstants.GameResConstants.MAP_META_HEIGHT,
+                                GamePlayConstants.GameResConstants.MAP_META_WIDTH,
+                                GamePlayConstants.GameResConstants.MAP_META_HEIGHT,
+                                matrix,true);
+            }
+        }
 
         map.recycle();
         InputStream is = null;
@@ -56,30 +81,57 @@ public class FloorView implements IGameView {
                 }
             }
         }
+
     }
 
     public void setLevel(int level)
     {
         this.level = level;
     }
+    private FloorMap getMap()
+    {
+        return localMap[level];
+    }
 
 
     @Override
     public void onDraw(Canvas lockCanvas, Paint paint) {
-        lockCanvas.drawBitmap(ground,0,0,paint);
-        lockCanvas.drawBitmap(wall,100,100,paint);
-        lockCanvas.drawBitmap(yellowDoor,200,200,paint);
+        FloorMap map = getMap();
+
+        for(int i = 0;i < map.getMap().length / GamePlayConstants.MAP_WIDTH;i++)
+        {
+            for(int j = 0;j < GamePlayConstants.MAP_WIDTH;j++)
+            {
+                int width = lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH;
+                matrix.setTranslate(
+                        ((float)lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_WIDTH,
+                        ((float)lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_HEIGHT);
+                matrix.postTranslate(j * width,i * width);
+                drawElement(lockCanvas,
+                        GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
+                        paint);
+            }
+        }
+    }
+
+
+    private void drawElement(Canvas canvas,int id,Paint paint)
+    {
+        canvas.drawBitmap(sprite[id],matrix,paint);
     }
 
     @Override
     public void onExit() {
-        if(!wall.isRecycled())
-            wall.recycle();
-
-        if(!ground.isRecycled())
-            ground.recycle();
-
-        if(!yellowDoor.isRecycled())
-            yellowDoor.recycle();
+        for(Bitmap bitmap : sprite)
+        {
+            recycle(bitmap);
+        }
     }
+
+    private void recycle(@NotNull Bitmap bitmap)
+    {
+        if(!bitmap.isRecycled())
+            bitmap.recycle();
+    }
+
 }

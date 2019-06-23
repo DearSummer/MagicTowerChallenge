@@ -107,6 +107,7 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback,
     }
 
 
+
     private void draw()
     {
         Canvas canvas = holder.lockCanvas();

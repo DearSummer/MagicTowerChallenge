@@ -1,6 +1,7 @@
 package com.billy.magictower.util;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.billy.magictower.activity.MTBaseActivity;
 
@@ -35,4 +36,10 @@ public class ApplicationUtil {
         context.startActivity(intent);
         context.finish();
     }
+
+    public static <T> void log(String tag,T msg)
+    {
+        Log.d(tag, String.valueOf(msg));
+    }
+
 }
