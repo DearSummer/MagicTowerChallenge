@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.billy.magictower.R;
+import com.billy.magictower.controller.FloorController;
 import com.billy.magictower.view.FloorView;
 import com.billy.magictower.view.MainGameView;
 
@@ -25,10 +26,11 @@ public class GameActivity extends MTBaseActivity {
         WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;         // 屏幕宽度（像素）
+
+        FloorController floorController = new FloorController(this);
 
         mainGameView = findViewById(R.id.gv_main);
-        mainGameView.register(new FloorView(this,width));
+        mainGameView.register(new FloorView(this,floorController,dm.widthPixels));
 
 
     }

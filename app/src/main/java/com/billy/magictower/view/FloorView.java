@@ -9,24 +9,23 @@ import android.graphics.Paint;
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
 import com.billy.magictower.activity.MTBaseActivity;
+import com.billy.magictower.controller.FloorController;
 import com.billy.magictower.entity.FloorMap;
 import com.billy.magictower.util.ApplicationUtil;
 import com.billy.magictower.util.JsonUtil;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.io.InputStream;
 
 public class FloorView implements IGameView {
 
-    private int level = 0;
-    private FloorMap[] localMap;
 
     private Bitmap[] sprite;
     private Matrix matrix;
 
-    public FloorView(MTBaseActivity context,int width)
+    private FloorController controller;
+
+    public FloorView(MTBaseActivity context,FloorController controller,int width)
     {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inScaled = false;
@@ -58,45 +57,17 @@ public class FloorView implements IGameView {
         }
 
         map.recycle();
-        InputStream is = null;
-        try {
-            is = context.getAssets().open("floor.json");
-            StringBuilder stringBuffer = new StringBuilder();
-            byte[] buf = new byte[1024];
-            int byteCount;
-            while ( (byteCount = is.read(buf)) != -1)
-            {
-                stringBuffer.append(new String(buf,0,byteCount));
-            }
 
-            localMap = JsonUtil.getMap(stringBuffer.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if(is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        this.controller = controller;
 
     }
 
-    public void setLevel(int level)
-    {
-        this.level = level;
-    }
-    private FloorMap getMap()
-    {
-        return localMap[level];
-    }
+
 
 
     @Override
     public void onDraw(Canvas lockCanvas, Paint paint) {
-        FloorMap map = getMap();
+        FloorMap map = controller.getMap();
 
         for(int i = 0;i < map.getMap().length / GamePlayConstants.MAP_WIDTH;i++)
         {

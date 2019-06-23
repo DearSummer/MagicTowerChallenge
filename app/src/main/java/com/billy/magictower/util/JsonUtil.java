@@ -12,4 +12,8 @@ public class JsonUtil {
         return gson.fromJson(value,FloorMap[].class);
     }
 
+    public static String toJson(FloorMap[] map)
+    {
+        return gson.toJson(map);
+    }
 }
