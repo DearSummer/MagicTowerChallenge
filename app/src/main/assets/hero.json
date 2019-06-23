@@ -1,9 +1,9 @@
 {
   "hp": 1000,
-  "atk": 5,
+  "atk": 100,
   "def": 100,
-  "yellowKey": 0,
-  "blueKey": 0,
-  "redKey": 0,
+  "yellowKey": 100,
+  "blueKey": 100,
+  "redKey": 100,
   "coin": 0
 }

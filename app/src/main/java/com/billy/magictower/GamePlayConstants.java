@@ -32,28 +32,51 @@ public class GamePlayConstants {
 
     public static class GameValueConstants
     {
+        //--------------base--------------------
         public final static int GROUND = 0;
         public final static int WALL = 1;
-        public final static int YELLOW_DOOR = 2;
+
+        //--------------key---------------------
         public final static int YELLOW_KEY = 3;
+        public final static int BLUE_KEY = 81;
+
+        //--------------door--------------------
+        public final static int BLUE_DOOR = 8;
+        public final static int RED_DOOR = 9;
+        public final static int YELLOW_DOOR = 2;
+        public final static int IRON_GATE = 80;
+        public final static int HIDDEN_WALL = 82;
+
+        //--------------buff&drug----------------
         public final static int LITTLE_BLOOD = 4;
         public final static int BIG_BLOOD = 5;
         public final static int ATTACK_BUFF = 6;
         public final static int DEFENSE_BUFF = 7;
-        public final static int BLUE_DOOR = 8;
-        public final static int RED_DOOR = 9;
+
+        //--------------stair-------------------
         public final static int UP_STAIR = 10;
         public final static int DOWN_STAIR =11;
+
+        public final static int IRON_SWORD = 51;
+
+        //--------------monster-----------------
         public final static int SKELETON = 12;
         public final static int SKELETON_KING = 13;
         public final static int WIZARD = 14;
         public final static int LITTLE_BAT = 15;
         public final static int GREEN_SLIME = 16;
         public final static int RED_SLIME = 17;
+        public final static int MIDDLE_GUARD = 18;
+
+
+        //-------------player-------------------
         public final static int HERO = 99;
 
+
         public final static int MONSTER_ID_BEGIN = 12;
-        public final static int MONSTER_ID_END = 80;
+        public final static int MONSTER_ID_END = 50;
+
+        public final static int NEXT_FRAME_INDEX = 44;
 
         public final static List<Integer> heroForward = new ArrayList<Integer>(){{
            add(0);
@@ -103,6 +126,11 @@ public class GamePlayConstants {
                 put(LITTLE_BAT,51);
                 put(GREEN_SLIME,49);
                 put(RED_SLIME,50);
+                put(MIDDLE_GUARD,69);
+                put(IRON_GATE,9);
+                put(BLUE_KEY,19);
+                put(HIDDEN_WALL,1);
+                put(IRON_SWORD,26);
             }
         };
     }

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+
 public class HeroController {
 
 
@@ -34,6 +35,9 @@ public class HeroController {
     private Random random;
 
     private int heroI,heroJ;
+
+
+
 
     public HeroController(MTBaseActivity context,FloorController floorController)
     {
@@ -169,9 +173,11 @@ public class HeroController {
                 break;
             case GamePlayConstants.GameValueConstants.UP_STAIR:
                 floorController.upStairs();
+                findHeroLocation();
                 return GamePlayConstants.MoveStatusCode.MOVE_FLOOR;
             case GamePlayConstants.GameValueConstants.DOWN_STAIR:
                 floorController.downStairs();
+                findHeroLocation();
                 return GamePlayConstants.MoveStatusCode.MOVE_FLOOR;
         }
 
