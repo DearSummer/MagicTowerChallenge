@@ -1,11 +1,9 @@
-[
-  {
-    "hp": 1000,
-    "atk": 100,
-    "def": 100,
-    "yellowKey": 0,
-    "blueKey": 0,
-    "redKey": 0,
-    "coin": 0
-  }
-]
+{
+  "hp": 1000,
+  "atk": 100,
+  "def": 100,
+  "yellowKey": 0,
+  "blueKey": 0,
+  "redKey": 0,
+  "coin": 0
+}

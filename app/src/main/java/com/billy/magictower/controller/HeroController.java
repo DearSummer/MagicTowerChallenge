@@ -13,12 +13,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class HeroController {
 
 
     private HeroAttribute heroAttribute;
     private FloorController floorController;
+
+    private int heroSpriteId = 0;
+    private Random random;
 
     private int heroI,heroJ;
 
@@ -27,13 +31,14 @@ public class HeroController {
         this.floorController = floorController;
         findHeroLocation();
         newGame(context);
+        random = new Random();
     }
 
     private void newGame(MTBaseActivity context)
     {
         InputStream is = null;
         try {
-            is = context.getAssets().open("floor.json");
+            is = context.getAssets().open("hero.json");
             StringBuilder stringBuffer = new StringBuilder();
             byte[] buf = new byte[1024];
             int byteCount;
@@ -102,18 +107,31 @@ public class HeroController {
         int value = floorController.getValueInMap(i,j);
         switch (value) {
             case GamePlayConstants.GameValueConstants.YELLOW_KEY:
-                heroAttribute.addYelloKey();
+                heroAttribute.addYellowKey();
                 break;
             case GamePlayConstants.GameValueConstants.YELLOW_DOOR:
-                if(heroAttribute.getYellowKey() > 0)
-                {
+                if (heroAttribute.getYellowKey() > 0) {
                     heroAttribute.setYellowKey(heroAttribute.getYellowKey() - 1);
-                }
-                else{
+                } else {
                     return GamePlayConstants.MoveStatusCode.NO_YELLOW_KEY;
                 }
                 break;
+            case GamePlayConstants.GameValueConstants.UP_STAIR:
+                floorController.upStairs();
+                return GamePlayConstants.MoveStatusCode.MOVE_FLOOR;
+            case GamePlayConstants.GameValueConstants.DOWN_STAIR:
+                floorController.downStairs();
+                return GamePlayConstants.MoveStatusCode.MOVE_FLOOR;
         }
+
+        if(i - heroI > 0)
+            heroSpriteId = GamePlayConstants.GameValueConstants.heroRight.get(random.nextInt(3));
+        else if(i - heroI < 0)
+            heroSpriteId = GamePlayConstants.GameValueConstants.heroLeft.get(random.nextInt(3));
+        else if(j - heroJ > 0)
+            heroSpriteId = GamePlayConstants.GameValueConstants.heroForward.get(random.nextInt(3));
+        else if(j - heroJ < 0)
+            heroSpriteId = GamePlayConstants.GameValueConstants.heroBack.get(random.nextInt(3));
 
         floorController.setValueInMap(heroI, heroJ, GamePlayConstants.GameValueConstants.GROUND);
         floorController.setValueInMap(i, j, GamePlayConstants.GameValueConstants.HERO);
@@ -223,13 +241,13 @@ public class HeroController {
                 continue;
 
             int checkX = node.getI() + i;
-            if (checkX > 0 && checkX < GamePlayConstants.MAP_WIDTH) {
+            if (checkX >= 0 && checkX < GamePlayConstants.MAP_WIDTH) {
                 neighbourList.add(new AStarNode(checkX, node.getJ(),
                         canBeTarget(node)));
             }
 
             int checkY = node.getJ() + i;
-            if (checkY > 0 && checkY < GamePlayConstants.MAP_WIDTH) {
+            if (checkY >= 0 && checkY < GamePlayConstants.MAP_WIDTH) {
                 neighbourList.add(new AStarNode(node.getI(), checkY,
                         canBeTarget(node)));
             }
@@ -242,7 +260,7 @@ public class HeroController {
 
     public int getSpriteId()
     {
-        return 0;
+        return heroSpriteId;
     }
 
 

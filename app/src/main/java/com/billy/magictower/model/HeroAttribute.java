@@ -11,13 +11,6 @@ public class HeroAttribute {
 
     public HeroAttribute()
     {
-        hp = 1000;
-        atk = 100;
-        def = 100;
-        yellowKey = 0;
-        blueKey = 0;
-        redKey = 0;
-        coin = 0;
     }
 
     public HeroAttribute(int hp, int atk, int def, int yellowKey, int blueKey, int redKey, int coin) {
@@ -30,7 +23,7 @@ public class HeroAttribute {
         this.coin = coin;
     }
 
-    public void addYelloKey()
+    public void addYellowKey()
     {
         yellowKey++;
     }

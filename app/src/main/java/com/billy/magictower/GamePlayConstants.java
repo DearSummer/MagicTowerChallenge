@@ -1,6 +1,8 @@
 package com.billy.magictower;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GamePlayConstants {
     public final static int GAME_LOOP_FRAME_RATE = 30;
@@ -48,6 +50,26 @@ public class GamePlayConstants {
         public final static int RED_SLIME = 17;
         public final static int HERO = 99;
 
+        public final static List<Integer> heroForward = new ArrayList<Integer>(){{
+           add(0);
+           add(1);
+           add(2);
+        }};
+        public final static List<Integer> heroLeft = new ArrayList<Integer>(){{
+            add(3);
+            add(4);
+            add(5);
+        }};
+        public final static List<Integer> heroRight = new ArrayList<Integer>(){{
+            add(6);
+            add(7);
+            add(8);
+        }};
+        public final static List<Integer> heroBack = new ArrayList<Integer>(){{
+            add(9);
+            add(10);
+            add(11);
+        }};
         public final static HashMap<Integer,Integer> valueMap = new HashMap<Integer, Integer>()
         {
             {
@@ -80,5 +102,6 @@ public class GamePlayConstants {
         public final static int NO_RED_KEY = 2;
         public final static int NO_BLUE_KEY = 3;
         public final static int CANT_REACH = 4;
+        public final static int MOVE_FLOOR = 5;
     }
 }

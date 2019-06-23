@@ -50,6 +50,16 @@ public class FloorController {
         }
     }
 
+    public void upStairs()
+    {
+        level++;
+    }
+
+    public void downStairs()
+    {
+        level--;
+    }
+
     public int getValueInMap(int i,int j)
     {
         return localMap[level].getMap()[j * GamePlayConstants.MAP_WIDTH + i];
