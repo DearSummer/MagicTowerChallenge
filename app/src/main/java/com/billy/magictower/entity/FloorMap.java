@@ -1,5 +1,7 @@
 package com.billy.magictower.entity;
 
+import com.billy.magictower.GamePlayConstants;
+
 public class FloorMap {
     private int level;
     private int[] map;
@@ -27,4 +29,10 @@ public class FloorMap {
     public void setMap(int[] map) {
         this.map = map;
     }
+
+    public void setValue(int i,int j,int value)
+    {
+        this.map[j * GamePlayConstants.MAP_WIDTH + i] = value;
+    }
+
 }

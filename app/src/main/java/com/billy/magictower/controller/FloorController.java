@@ -2,6 +2,7 @@ package com.billy.magictower.controller;
 
 import android.os.Environment;
 
+import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.activity.MTBaseActivity;
 import com.billy.magictower.entity.FloorMap;
 import com.billy.magictower.util.ApplicationUtil;
@@ -47,6 +48,16 @@ public class FloorController {
                 }
             }
         }
+    }
+
+    public int getValueInMap(int i,int j)
+    {
+        return localMap[level].getMap()[j * GamePlayConstants.MAP_WIDTH + i];
+    }
+
+    public void setValueInMap(int i ,int j,int value)
+    {
+        localMap[level].setValue(i,j,value);
     }
 
     public void saveGame()

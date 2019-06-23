@@ -10,9 +10,9 @@ import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
 import com.billy.magictower.activity.MTBaseActivity;
 import com.billy.magictower.controller.FloorController;
+import com.billy.magictower.controller.HeroController;
 import com.billy.magictower.entity.FloorMap;
 import com.billy.magictower.util.ApplicationUtil;
-import com.billy.magictower.util.JsonUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,15 +21,18 @@ public class FloorView implements IGameView {
 
 
     private Bitmap[] sprite;
+    private Bitmap[] hero;
     private Matrix matrix;
 
-    private FloorController controller;
+    private FloorController floorController;
+    private HeroController heroController;
 
-    public FloorView(MTBaseActivity context,FloorController controller,int width)
+    public FloorView(MTBaseActivity context,FloorController floorController,HeroController heroController,int width)
     {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inScaled = false;
         Bitmap map = BitmapFactory.decodeResource(context.getResources(),R.drawable.map16,opts);
+        Bitmap player = BitmapFactory.decodeResource(context.getResources(),R.drawable.hero16,opts);
         ApplicationUtil.log("width",map.getWidth());
         ApplicationUtil.log("height",map.getHeight());
 
@@ -56,33 +59,60 @@ public class FloorView implements IGameView {
             }
         }
 
-        map.recycle();
+        hero = new Bitmap[GamePlayConstants.GameResConstants.HERO_SPRITE_WIDTH_COUNT];
+        for(int i = 0;i < GamePlayConstants.GameResConstants.HERO_SPRITE_WIDTH_COUNT;i++)
+        {
+            hero[i] = Bitmap.createBitmap(player,
+                    i * GamePlayConstants.GameResConstants.MAP_META_WIDTH,0,
+                    GamePlayConstants.GameResConstants.MAP_META_WIDTH,
+                    GamePlayConstants.GameResConstants.MAP_META_HEIGHT,
+                    matrix,true);
+        }
 
-        this.controller = controller;
+        map.recycle();
+        player.recycle();
+
+        this.floorController = floorController;
+        this.heroController = heroController;
 
     }
 
 
-
-
     @Override
     public void onDraw(Canvas lockCanvas, Paint paint) {
-        FloorMap map = controller.getMap();
+        FloorMap map = floorController.getMap();
 
         for(int i = 0;i < map.getMap().length / GamePlayConstants.MAP_WIDTH;i++)
         {
-            for(int j = 0;j < GamePlayConstants.MAP_WIDTH;j++)
-            {
+            for(int j = 0;j < GamePlayConstants.MAP_WIDTH;j++) {
                 int width = lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH;
                 matrix.setTranslate(
-                        ((float)lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_WIDTH,
-                        ((float)lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_HEIGHT);
-                matrix.postTranslate(j * width,i * width);
-                drawElement(lockCanvas,
-                        GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
-                        paint);
+                        ((float) lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_WIDTH,
+                        ((float) lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_HEIGHT);
+                matrix.postTranslate(j * width, i * width);
+                if (map.getMap()[i * GamePlayConstants.MAP_WIDTH + j] != GamePlayConstants.GameValueConstants.HERO)
+                    drawElement(lockCanvas,
+                            GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
+                            paint);
+                else {
+                    drawElement(lockCanvas,
+                            GamePlayConstants.GameValueConstants.valueMap.get(GamePlayConstants.GameValueConstants.GROUND),
+                            paint);
+                    drawHero(lockCanvas, heroController.getSpriteId(), paint);
+                }
             }
         }
+    }
+
+    public int getSpriteWidth()
+    {
+        return sprite[0].getWidth();
+    }
+
+
+    private void drawHero(Canvas canvas,int id,Paint paint)
+    {
+        canvas.drawBitmap(hero[id],matrix,paint);
     }
 
 

@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.billy.magictower.R;
 import com.billy.magictower.controller.FloorController;
+import com.billy.magictower.controller.HeroController;
+import com.billy.magictower.util.ApplicationUtil;
 import com.billy.magictower.view.FloorView;
 import com.billy.magictower.view.MainGameView;
 
@@ -16,6 +19,11 @@ public class GameActivity extends MTBaseActivity {
 
 
     private MainGameView mainGameView;
+
+    private FloorView floorView;
+
+    FloorController floorController;
+    HeroController heroController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,10 +35,37 @@ public class GameActivity extends MTBaseActivity {
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);
 
-        FloorController floorController = new FloorController(this);
+        floorController = new FloorController(this);
+        heroController = new HeroController(floorController);
+
+        floorView = new FloorView(this,floorController,heroController,dm.widthPixels);
 
         mainGameView = findViewById(R.id.gv_main);
-        mainGameView.register(new FloorView(this,floorController,dm.widthPixels));
+        mainGameView.register(floorView);
+
+        mainGameView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    v.performClick();
+                    float x = event.getX();
+                    float y = event.getY();
+
+                    int widthIndex = (int)(x / floorView.getSpriteWidth());
+                    int heightIndex = (int)(y / floorView.getSpriteWidth());
+
+                    ApplicationUtil.log("wIndex",widthIndex);
+                    ApplicationUtil.log("hIndex",heightIndex);
+
+                    heroController.goToTarget(widthIndex,heightIndex);
+
+                }
+
+
+                return false;
+            }
+        });
 
 
     }

@@ -22,6 +22,8 @@ public class GamePlayConstants {
         public final static int MAP_SPRITE_WIDTH_COUNT = 11;
         public final static int MAP_SPRITE_HEIGHT_COUNT = 12;
 
+        public final static int HERO_SPRITE_WIDTH_COUNT = 14;
+
     }
 
     public static class GameValueConstants
@@ -44,6 +46,7 @@ public class GamePlayConstants {
         public final static int LITTLE_BAT = 15;
         public final static int GREEN_SLIME = 16;
         public final static int RED_SLIME = 17;
+        public final static int HERO = 99;
 
         public final static HashMap<Integer,Integer> valueMap = new HashMap<Integer, Integer>()
         {

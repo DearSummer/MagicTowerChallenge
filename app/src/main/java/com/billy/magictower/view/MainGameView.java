@@ -92,6 +92,11 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback,
         }
     }
 
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
     public void exitGame()
     {
         for(IGameView view : gameViewList)
