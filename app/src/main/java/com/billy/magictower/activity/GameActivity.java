@@ -14,6 +14,7 @@ import com.billy.magictower.controller.FloorController;
 import com.billy.magictower.controller.HeroController;
 import com.billy.magictower.util.ApplicationUtil;
 import com.billy.magictower.view.FloorView;
+import com.billy.magictower.view.HeroStatusView;
 import com.billy.magictower.view.MainGameView;
 
 public class GameActivity extends MTBaseActivity {
@@ -22,9 +23,10 @@ public class GameActivity extends MTBaseActivity {
     private MainGameView mainGameView;
 
     private FloorView floorView;
+    private HeroStatusView heroStatusView;
 
-    FloorController floorController;
-    HeroController heroController;
+    private FloorController floorController;
+    private HeroController heroController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,9 +42,11 @@ public class GameActivity extends MTBaseActivity {
         heroController = new HeroController(this,floorController);
 
         floorView = new FloorView(this,floorController,heroController,dm.widthPixels);
+        heroStatusView = new HeroStatusView(this,heroController);
 
         mainGameView = findViewById(R.id.gv_main);
         mainGameView.register(floorView);
+        mainGameView.register(heroStatusView);
 
         mainGameView.setOnTouchListener(new View.OnTouchListener() {
             @Override

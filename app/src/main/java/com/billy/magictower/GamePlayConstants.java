@@ -26,6 +26,8 @@ public class GamePlayConstants {
 
         public final static int HERO_SPRITE_WIDTH_COUNT = 14;
 
+        public static int MAP_SPRITE_FINAL_WIDTH = MAP_META_WIDTH;
+
     }
 
     public static class GameValueConstants
@@ -73,6 +75,13 @@ public class GamePlayConstants {
             add(10);
             add(11);
         }};
+        public final static List<Integer> fightingParticle = new ArrayList<Integer>()
+        {{
+            add(12);
+            add(13);
+            add(PARTICLE_NOT_NEED_SHOW);
+        }};
+        public final static int PARTICLE_NOT_NEED_SHOW = 999;
         public final static HashMap<Integer,Integer> valueMap = new HashMap<Integer, Integer>()
         {
             {
@@ -96,6 +105,11 @@ public class GamePlayConstants {
                 put(RED_SLIME,50);
             }
         };
+    }
+
+    public static class HeroStatusCode{
+        public final static int HERO_NORMAL = 0;
+        public final static int HERO_FIGHTING = 1;
     }
 
     public static class MoveStatusCode

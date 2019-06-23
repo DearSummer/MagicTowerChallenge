@@ -1,7 +1,6 @@
 package com.billy.magictower.view;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -13,6 +12,7 @@ import com.billy.magictower.controller.FloorController;
 import com.billy.magictower.controller.HeroController;
 import com.billy.magictower.model.FloorMap;
 import com.billy.magictower.util.ApplicationUtil;
+import com.billy.magictower.util.BitmapUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +29,8 @@ public class FloorView implements IGameView {
 
     public FloorView(MTBaseActivity context,FloorController floorController,HeroController heroController,int width)
     {
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inScaled = false;
-        Bitmap map = BitmapFactory.decodeResource(context.getResources(),R.drawable.map16,opts);
-        Bitmap player = BitmapFactory.decodeResource(context.getResources(),R.drawable.hero16,opts);
+        Bitmap map = BitmapUtil.decode(context,R.drawable.map16);
+        Bitmap player = BitmapUtil.decode(context,R.drawable.hero16);
         ApplicationUtil.log("width",map.getWidth());
         ApplicationUtil.log("height",map.getHeight());
 
@@ -72,6 +70,8 @@ public class FloorView implements IGameView {
         map.recycle();
         player.recycle();
 
+        GamePlayConstants.GameResConstants.MAP_SPRITE_FINAL_WIDTH = sprite[0].getWidth();
+
         this.floorController = floorController;
         this.heroController = heroController;
 
@@ -99,6 +99,10 @@ public class FloorView implements IGameView {
                             GamePlayConstants.GameValueConstants.valueMap.get(GamePlayConstants.GameValueConstants.GROUND),
                             paint);
                     drawHero(lockCanvas, heroController.getSpriteId(), paint);
+                    if(heroController.heroStatus() == GamePlayConstants.HeroStatusCode.HERO_FIGHTING)
+                    {
+                        drawHero(lockCanvas,heroController.getParticleId(),paint);
+                    }
                 }
             }
         }
@@ -110,9 +114,10 @@ public class FloorView implements IGameView {
     }
 
 
-    private void drawHero(Canvas canvas,int id,Paint paint)
-    {
-        canvas.drawBitmap(hero[id],matrix,paint);
+    private void drawHero(Canvas canvas,int id,Paint paint) {
+        if (id == GamePlayConstants.GameValueConstants.PARTICLE_NOT_NEED_SHOW)
+            return;
+        canvas.drawBitmap(hero[id], matrix, paint);
     }
 
 

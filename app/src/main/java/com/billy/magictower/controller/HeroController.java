@@ -29,7 +29,8 @@ public class HeroController {
 
     private Map<Integer, MonsterAttribute> monsterMap;
 
-    private int heroSpriteId = 0;
+    private int heroSpriteId = 0,heroStatus = GamePlayConstants.HeroStatusCode.HERO_NORMAL;
+    private int particleId = 0;
     private Random random;
 
     private int heroI,heroJ;
@@ -74,6 +75,11 @@ public class HeroController {
                 }
             }
         }
+    }
+
+    public int heroStatus()
+    {
+        return heroStatus;
     }
 
     private void newGame(MTBaseActivity context)
@@ -121,6 +127,9 @@ public class HeroController {
     }
 
     public int goToTarget(int i,int j) {
+        boolean canMoveTo = canBeTarget(new AStarNode(i,j,false));
+        if(!canMoveTo)
+            return GamePlayConstants.MoveStatusCode.CANT_REACH;
         AStarNode start = new AStarNode(heroI, heroJ, true);
         AStarNode end = new AStarNode(i, j,
                 floorController.getValueInMap(i, j) == GamePlayConstants.GameValueConstants.GROUND);
@@ -194,8 +203,12 @@ public class HeroController {
     {
         MonsterAttribute enemy = monsterMap.get(monster);
         assert enemy != null;
-        while(enemy.getHp() <= 0)
+        while(enemy.getHp() >= 0)
         {
+            heroStatus = GamePlayConstants.HeroStatusCode.HERO_FIGHTING;
+            particleId = GamePlayConstants.GameValueConstants.fightingParticle.get(random.nextInt(
+                    GamePlayConstants.GameValueConstants.fightingParticle.size()
+            ));
             int heroDamage = heroAttribute.getAtk() - enemy.getDef();
             if(heroDamage < 0)
                 heroDamage = 0;
@@ -206,10 +219,21 @@ public class HeroController {
                 enemyDamage = 0;
             heroAttribute.setHp(heroAttribute.getHp() - enemyDamage);
 
-            if(heroAttribute.getHp() < 0)
+            if(heroAttribute.getHp() < 0){
+                heroStatus = GamePlayConstants.HeroStatusCode.HERO_NORMAL;
                 return GamePlayConstants.MoveStatusCode.FIGHT_DIE;
+            }
 
+
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
+        heroStatus = GamePlayConstants.HeroStatusCode.HERO_NORMAL;
+        heroAttribute.setCoin(heroAttribute.getCoin() + enemy.getCoin());
         return GamePlayConstants.MoveStatusCode.FIGHT_SUCCESS;
     }
 
@@ -335,6 +359,16 @@ public class HeroController {
         return heroSpriteId;
     }
 
+    public int getParticleId()
+    {
+        return particleId;
+    }
+
+
+    public HeroAttribute getHeroAttribute()
+    {
+        return heroAttribute;
+    }
 
 
 }

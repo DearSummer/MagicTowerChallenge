@@ -2,7 +2,9 @@ package com.billy.magictower.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -116,6 +118,8 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback,
     private void draw()
     {
         Canvas canvas = holder.lockCanvas();
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        canvas.drawColor(Color.WHITE);
         for(IGameView view : gameViewList)
         {
             view.onDraw(canvas,paint);
