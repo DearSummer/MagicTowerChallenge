@@ -7,7 +7,9 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
 import com.billy.magictower.controller.FloorController;
 import com.billy.magictower.controller.HeroController;
@@ -36,7 +38,7 @@ public class GameActivity extends MTBaseActivity {
         wm.getDefaultDisplay().getMetrics(dm);
 
         floorController = new FloorController(this);
-        heroController = new HeroController(floorController);
+        heroController = new HeroController(this,floorController);
 
         floorView = new FloorView(this,floorController,heroController,dm.widthPixels);
 
@@ -47,21 +49,22 @@ public class GameActivity extends MTBaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
-                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                if(event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.performClick();
                     float x = event.getX();
                     float y = event.getY();
 
-                    int widthIndex = (int)(x / floorView.getSpriteWidth());
-                    int heightIndex = (int)(y / floorView.getSpriteWidth());
+                    int widthIndex = (int) (x / floorView.getSpriteWidth());
+                    int heightIndex = (int) (y / floorView.getSpriteWidth());
 
-                    ApplicationUtil.log("wIndex",widthIndex);
-                    ApplicationUtil.log("hIndex",heightIndex);
+                    ApplicationUtil.log("wIndex", widthIndex);
+                    ApplicationUtil.log("hIndex", heightIndex);
 
-                    if(!heroController.goToTarget(widthIndex,heightIndex))
-                    {
-                        ApplicationUtil.log("__TAG__","地方不可到达");
-                    }
+                    int value = heroController.goToTarget(widthIndex, heightIndex);
+                    if (value == GamePlayConstants.MoveStatusCode.CANT_REACH)
+                        ApplicationUtil.toast(GameActivity.this, "此乃无法到达之地");
+                    else if (value == GamePlayConstants.MoveStatusCode.NO_YELLOW_KEY)
+                        ApplicationUtil.toast(GameActivity.this, "黄钥匙不足");
 
                 }
 

@@ -1,26 +1,61 @@
 package com.billy.magictower.controller;
 
 import com.billy.magictower.GamePlayConstants;
+import com.billy.magictower.activity.MTBaseActivity;
 import com.billy.magictower.model.AStarNode;
 import com.billy.magictower.model.FloorMap;
 import com.billy.magictower.model.HeroAttribute;
 import com.billy.magictower.util.ApplicationUtil;
+import com.billy.magictower.util.JsonUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HeroController {
+
 
     private HeroAttribute heroAttribute;
     private FloorController floorController;
 
     private int heroI,heroJ;
 
-    public HeroController(FloorController floorController)
+    public HeroController(MTBaseActivity context,FloorController floorController)
     {
         this.floorController = floorController;
         findHeroLocation();
+        newGame(context);
     }
+
+    private void newGame(MTBaseActivity context)
+    {
+        InputStream is = null;
+        try {
+            is = context.getAssets().open("floor.json");
+            StringBuilder stringBuffer = new StringBuilder();
+            byte[] buf = new byte[1024];
+            int byteCount;
+            while ( (byteCount = is.read(buf)) != -1)
+            {
+                stringBuffer.append(new String(buf,0,byteCount));
+            }
+
+            heroAttribute = JsonUtil.getHeroAttribute(stringBuffer.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     private void findHeroLocation()
     {
@@ -38,13 +73,46 @@ public class HeroController {
         ApplicationUtil.log("heroI",heroI);
     }
 
-    public boolean goToTarget(int i,int j) {
+    public int goToTarget(int i,int j) {
         AStarNode start = new AStarNode(heroI, heroJ, true);
         AStarNode end = new AStarNode(i, j,
                 floorController.getValueInMap(i, j) == GamePlayConstants.GameValueConstants.GROUND);
         List<AStarNode> road = findPath(start, end);
         if (road == null) {
-            return false;
+            return GamePlayConstants.MoveStatusCode.CANT_REACH;
+        }
+
+        for(AStarNode node : road)
+        {
+            int code = move(node.getI(),node.getJ());
+            if(code != GamePlayConstants.MoveStatusCode.MOVE_SUCCESS_CODE)
+                return code;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return GamePlayConstants.MoveStatusCode.MOVE_SUCCESS_CODE;
+    }
+
+    private int move(int i ,int j)
+    {
+        int value = floorController.getValueInMap(i,j);
+        switch (value) {
+            case GamePlayConstants.GameValueConstants.YELLOW_KEY:
+                heroAttribute.addYelloKey();
+                break;
+            case GamePlayConstants.GameValueConstants.YELLOW_DOOR:
+                if(heroAttribute.getYellowKey() > 0)
+                {
+                    heroAttribute.setYellowKey(heroAttribute.getYellowKey() - 1);
+                }
+                else{
+                    return GamePlayConstants.MoveStatusCode.NO_YELLOW_KEY;
+                }
+                break;
         }
 
         floorController.setValueInMap(heroI, heroJ, GamePlayConstants.GameValueConstants.GROUND);
@@ -52,8 +120,9 @@ public class HeroController {
         heroJ = j;
         heroI = i;
 
-        return true;
+        return GamePlayConstants.MoveStatusCode.MOVE_SUCCESS_CODE;
     }
+
 
     private List<AStarNode> findPath(AStarNode start, AStarNode end)
     {
@@ -117,6 +186,10 @@ public class HeroController {
         return false;
     }
 
+    private boolean canBeTarget(AStarNode node) {
+        int value = floorController.getValueInMap(node.getI(), node.getJ());
+        return value != GamePlayConstants.GameValueConstants.WALL;
+    }
 
     private List<AStarNode> getRoad(AStarNode start, AStarNode end)
     {
@@ -127,7 +200,7 @@ public class HeroController {
             road.add(cur);
             cur = cur.getParent();
         }
-
+        Collections.reverse(road);
         return road;
     }
 
@@ -145,26 +218,22 @@ public class HeroController {
     private List<AStarNode> getNeighbour(AStarNode node)
     {
         List<AStarNode> neighbourList = new ArrayList<>();
-        for(int i = -1;i <= 1;i++)
-        {
-            for(int j = -1;j <= 1;j++)
-            {
-                if(i ==0 && j == 0)
-                    continue;
+        for(int i = -1;i <= 1;i++) {
+            if (i == 0)
+                continue;
 
-                int checkX = node.getI() + i;
-                if(checkX < 0 || checkX >= GamePlayConstants.MAP_WIDTH)
-                    continue;
-
-                int checkY = node.getJ() + j;
-                if(checkY < 0 || checkY >= GamePlayConstants.MAP_WIDTH)
-                    continue;
-
-                AStarNode n = new AStarNode(checkX,checkY,
-                        floorController.getValueInMap(checkX,checkY) == GamePlayConstants.GameValueConstants.GROUND);
-
-                neighbourList.add(n);
+            int checkX = node.getI() + i;
+            if (checkX > 0 && checkX < GamePlayConstants.MAP_WIDTH) {
+                neighbourList.add(new AStarNode(checkX, node.getJ(),
+                        canBeTarget(node)));
             }
+
+            int checkY = node.getJ() + i;
+            if (checkY > 0 && checkY < GamePlayConstants.MAP_WIDTH) {
+                neighbourList.add(new AStarNode(node.getI(), checkY,
+                        canBeTarget(node)));
+            }
+
         }
 
         return neighbourList;

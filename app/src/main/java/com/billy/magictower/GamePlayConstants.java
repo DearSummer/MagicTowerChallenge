@@ -72,4 +72,13 @@ public class GamePlayConstants {
             }
         };
     }
+
+    public static class MoveStatusCode
+    {
+        public final static int MOVE_SUCCESS_CODE = 0;
+        public final static int NO_YELLOW_KEY = 1;
+        public final static int NO_RED_KEY = 2;
+        public final static int NO_BLUE_KEY = 3;
+        public final static int CANT_REACH = 4;
+    }
 }

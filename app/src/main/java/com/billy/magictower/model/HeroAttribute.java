@@ -30,6 +30,22 @@ public class HeroAttribute {
         this.coin = coin;
     }
 
+    public void addYelloKey()
+    {
+        yellowKey++;
+    }
+
+    public void addRedKey()
+    {
+        redKey++;
+    }
+
+    public void blueKey()
+    {
+        blueKey++;
+    }
+
+
     public int getHp() {
         return hp;
     }
