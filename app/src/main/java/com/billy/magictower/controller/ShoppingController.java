@@ -3,7 +3,7 @@ package com.billy.magictower.controller;
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.model.Goods;
 
-public class ShoppingController {
+public class ShoppingController  extends  TalkingBaseController{
 
     private HeroController heroController;
     private FloorController floorController;
@@ -18,7 +18,6 @@ public class ShoppingController {
     }
 
 
-    private boolean showing = false;
     private int needMoney = 20;
 
     public Goods getGoods() {
@@ -62,19 +61,4 @@ public class ShoppingController {
     }
 
 
-
-    public void startShopping()
-    {
-        showing = true;
-    }
-
-    public void end()
-    {
-        showing = false;
-    }
-
-
-    public boolean isShopping(){
-        return showing;
-    }
 }

@@ -18,36 +18,13 @@ import java.io.OutputStream;
 
 public class FloorController {
 
-    private static File dir = new File(Environment.getExternalStorageDirectory() + "/.magicTower/");
+    private static File dir = new File(Environment.getExternalStorageDirectory() + "/magicTower/");
 
     private int level = 0;
     private FloorMap[] localMap;
 
-    public FloorController(MTBaseActivity context)
-    {
-        InputStream is = null;
-        try {
-            is = context.getAssets().open("floor.json");
-            StringBuilder stringBuffer = new StringBuilder();
-            byte[] buf = new byte[1024];
-            int byteCount;
-            while ( (byteCount = is.read(buf)) != -1)
-            {
-                stringBuffer.append(new String(buf,0,byteCount));
-            }
-
-            localMap = JsonUtil.getMap(stringBuffer.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if(is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public FloorController(MTBaseActivity context) {
+        localMap = JsonUtil.getMap(JsonUtil.loadJsonFromAsset(context, "floor.json"));
     }
 
     public void upStairs()

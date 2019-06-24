@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
+import com.billy.magictower.controller.EquipmentController;
 import com.billy.magictower.controller.FloorController;
 import com.billy.magictower.controller.HeroController;
 import com.billy.magictower.controller.ShoppingController;
@@ -33,6 +34,7 @@ public class GameActivity extends MTBaseActivity {
     private HeroController heroController;
     private ShoppingController shoppingController;
     private StoryController storyController;
+    private EquipmentController equipmentController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,11 +49,13 @@ public class GameActivity extends MTBaseActivity {
         floorController = new FloorController(this);
         heroController = new HeroController(this, floorController);
         shoppingController = new ShoppingController(heroController, floorController);
-        storyController = new StoryController();
+        storyController = new StoryController(this,heroController);
+        equipmentController = new EquipmentController(heroController,floorController);
 
         floorView = new FloorView(this, floorController, heroController, dm.widthPixels);
         heroStatusView = new HeroStatusView(this, heroController);
-        takingView = new TakingView(this,storyController,shoppingController);
+        takingView = new TakingView(this,storyController,shoppingController,equipmentController,floorView);
+
 
         mainGameView = findViewById(R.id.gv_main);
         mainGameView.register(floorView);
@@ -73,7 +77,15 @@ public class GameActivity extends MTBaseActivity {
                     ApplicationUtil.log("wIndex", widthIndex);
                     ApplicationUtil.log("hIndex", heightIndex);
 
-                    if (!shoppingController.isShopping()) {
+                    if (!shoppingController.isShowing() && !storyController.isShowing() && !equipmentController.isShowing()) {
+
+                        int code = heroStatusView.onClick(x,y);
+                        if(code == GamePlayConstants.EquipmentCode.BOOK_CLICK)
+                        {
+                            equipmentController.start();
+                        }
+                        if(widthIndex >= GamePlayConstants.MAP_WIDTH || heightIndex >= GamePlayConstants.MAP_WIDTH)
+                            return false;
 
                         int value = heroController.goToTarget(widthIndex, heightIndex);
                         if (value == GamePlayConstants.MoveStatusCode.CANT_REACH)
@@ -87,7 +99,14 @@ public class GameActivity extends MTBaseActivity {
                         else if (value == GamePlayConstants.MoveStatusCode.NO_RED_KEY)
                             ApplicationUtil.toast(GameActivity.this, "红钥匙不足");
                         else if (value == GamePlayConstants.MoveStatusCode.SHOPPING)
-                            shoppingController.startShopping();
+                            shoppingController.start();
+                        else if(value == GamePlayConstants.MoveStatusCode.TALKING_WITH_ELDER)
+                        {
+                            takingView.setNpcSprite(floorView.getSprite(
+                                    GamePlayConstants.GameValueConstants.valueMap.get(GamePlayConstants.GameValueConstants.NPC_ELDER)));
+                            storyController.setStory(GamePlayConstants.GameValueConstants.NPC_ELDER,floorController.getCurrentFloor());
+                            storyController.start();
+                        }
 
                     }
                     else{

@@ -12,22 +12,36 @@ import android.util.Log;
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
 import com.billy.magictower.activity.MTBaseActivity;
+import com.billy.magictower.controller.EquipmentController;
 import com.billy.magictower.controller.ShoppingController;
 import com.billy.magictower.controller.StoryController;
 import com.billy.magictower.model.Goods;
+import com.billy.magictower.model.MonsterManual;
+import com.billy.magictower.model.NpcStory;
 import com.billy.magictower.util.BitmapUtil;
+
+import java.util.List;
 
 public class TakingView implements IGameView {
 
     private ShoppingController shoppingController;
     private StoryController storyController;
+    private EquipmentController equipmentController;
 
     private Bitmap hp,atk,def;
     private RectF hpRect,atkRect,defRect;
 
-    public TakingView(MTBaseActivity context,StoryController storyController, ShoppingController shoppingController) {
+    private FloorView floorView;
+
+    private Bitmap npcSprite;
+
+    public TakingView(MTBaseActivity context,
+                      StoryController storyController, ShoppingController shoppingController,
+                      EquipmentController equipmentController, FloorView floorView) {
         this.shoppingController = shoppingController;
         this.storyController = storyController;
+        this.equipmentController = equipmentController;
+        this.floorView = floorView;
 
         hp = loadBitmap(context, R.drawable.hp);
         atk = loadBitmap(context,R.drawable.sword);
@@ -40,10 +54,24 @@ public class TakingView implements IGameView {
 
     @Override
     public void onDraw(Canvas lockCanvas, Paint paint) {
-        if (shoppingController.isShopping()) {
+        if (shoppingController.isShowing()) {
             Goods goods = shoppingController.getGoods();
             clear(lockCanvas);
             drawStatus(lockCanvas,goods,paint);
+        }
+
+        if(storyController.isShowing())
+        {
+            NpcStory npcStory = storyController.getStory();
+            clear(lockCanvas);
+            drawTalking(lockCanvas,npcStory,paint);
+        }
+
+        if(equipmentController.isShowing())
+        {
+            List<MonsterManual> monsterManualList = equipmentController.getMonsterManualList();
+            clear(lockCanvas);
+            drawMonsterManual(lockCanvas,monsterManualList,paint);
         }
     }
 
@@ -53,6 +81,29 @@ public class TakingView implements IGameView {
         BitmapUtil.recycle(atk);
         BitmapUtil.recycle(def);
     }
+
+    private void drawMonsterManual(Canvas canvas,List<MonsterManual> monsterManualList,Paint paint)
+    {
+        float left = GamePlayConstants.GameResConstants.MAP_META_WIDTH * 2;
+        float top = GamePlayConstants.GameResConstants.MAP_META_HEIGHT * 2;
+        for(int i = 0;i < monsterManualList.size();i++) {
+            top += GamePlayConstants.GameResConstants.MAP_META_HEIGHT * 4f;
+            canvas.drawBitmap(floorView.getSprite(monsterManualList.get(i).getSpriteId()),
+                    left,
+                    top,
+                    paint);
+
+            paint.setTextSize(25);
+            canvas.drawText(monsterManualList.get(i).toString(),left + GamePlayConstants.GameResConstants.MAP_META_WIDTH * 2.5f,
+                    top + (float)GamePlayConstants.GameResConstants.MAP_META_HEIGHT ,paint);
+        }
+    }
+
+    public void setNpcSprite(Bitmap bitmap)
+    {
+        npcSprite = bitmap;
+    }
+
 
     private Bitmap loadBitmap(MTBaseActivity context, int id)
     {
@@ -67,7 +118,7 @@ public class TakingView implements IGameView {
     public int onClick(float x,float y)
     {
         int resultCode = 0;
-        if(shoppingController.isShopping())
+        if(shoppingController.isShowing())
         {
             if(hpRect.contains(x,y)){
                 resultCode = shoppingController.buy(GamePlayConstants.ShoppingStatusCode.HP);
@@ -87,9 +138,33 @@ public class TakingView implements IGameView {
             }
         }
 
+        if(storyController.isShowing())
+        {
+            storyController.end();
+            resultCode = GamePlayConstants.NpcTalkingCode.END;
+        }
+
+        if(equipmentController.isShowing())
+        {
+            equipmentController.end();
+        }
+
         return resultCode;
     }
 
+    private void drawTalking(Canvas lockCanvas,NpcStory npcStory,Paint paint)
+    {
+        float left = (float)lockCanvas.getWidth() / 2 - ((float)npcSprite.getWidth() / 2);
+        float top = (float)lockCanvas.getHeight()/3;
+        lockCanvas.drawBitmap(npcSprite,
+                left,
+                top,
+                paint);
+
+        top += npcSprite.getHeight() * 2;
+        left -= npcSprite.getWidth() * 5;
+        lockCanvas.drawText(npcStory.getStr(),left,top,paint);
+    }
 
     private void drawStatus(Canvas lockCanvas,Goods goods, Paint paint) {
         float left = (float)lockCanvas.getWidth() / 2 - (hp.getWidth() * 2);

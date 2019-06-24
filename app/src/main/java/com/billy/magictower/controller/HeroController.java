@@ -12,8 +12,6 @@ import com.billy.magictower.model.MonsterAttribute;
 import com.billy.magictower.util.ApplicationUtil;
 import com.billy.magictower.util.JsonUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +34,7 @@ public class HeroController {
 
     private int heroI,heroJ;
 
+    private List<Integer> equipmentList;
 
 
 
@@ -46,38 +45,25 @@ public class HeroController {
         newGame(context);
         initMonsterAttribute(context);
         random = new Random();
+        equipmentList = new ArrayList<>();
+    }
+
+    public List<Integer> getEquipmentList()
+    {
+        return equipmentList;
+    }
+
+    public void addEquipment(int id) {
+        if (!equipmentList.contains(id))
+            equipmentList.add(id);
     }
 
     @SuppressLint("UseSparseArrays")
-    private void initMonsterAttribute(MTBaseActivity context)
-    {
-        InputStream is = null;
-        try {
-            is = context.getAssets().open("monster.json");
-            StringBuilder stringBuffer = new StringBuilder();
-            byte[] buf = new byte[1024];
-            int byteCount;
-            while ( (byteCount = is.read(buf)) != -1)
-            {
-                stringBuffer.append(new String(buf,0,byteCount));
-            }
-
-            Monster[] monster = JsonUtil.getMonster(stringBuffer.toString());
-            monsterMap = new HashMap<>();
-            for (Monster monster1 : monster) {
-                monsterMap.put(monster1.getId(), monster1.getMonster());
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if(is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    private void initMonsterAttribute(MTBaseActivity context) {
+        Monster[] monster = JsonUtil.getMonster(JsonUtil.loadJsonFromAsset(context, "monster.json"));
+        monsterMap = new HashMap<>();
+        for (Monster monster1 : monster) {
+            monsterMap.put(monster1.getId(), monster1.getMonster());
         }
     }
 
@@ -86,31 +72,13 @@ public class HeroController {
         return heroStatus;
     }
 
-    private void newGame(MTBaseActivity context)
-    {
-        InputStream is = null;
-        try {
-            is = context.getAssets().open("hero.json");
-            StringBuilder stringBuffer = new StringBuilder();
-            byte[] buf = new byte[1024];
-            int byteCount;
-            while ( (byteCount = is.read(buf)) != -1)
-            {
-                stringBuffer.append(new String(buf,0,byteCount));
-            }
+    private void newGame(MTBaseActivity context) {
+        heroAttribute = JsonUtil.getHeroAttribute(JsonUtil.loadJsonFromAsset(context, "hero.json"));
+    }
 
-            heroAttribute = JsonUtil.getHeroAttribute(stringBuffer.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if(is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+
+    public MonsterAttribute getMonster(int id) {
+        return monsterMap.get(id);
     }
 
 
@@ -217,6 +185,10 @@ public class HeroController {
             case GamePlayConstants.GameValueConstants.STORE_MID:
             case GamePlayConstants.GameValueConstants.STORE_RIGHT:
                 return GamePlayConstants.MoveStatusCode.SHOPPING;
+            case GamePlayConstants.GameValueConstants.NPC_ELDER:
+                floorController.setValueInMap(i, j, GamePlayConstants.GameValueConstants.GROUND);
+                return GamePlayConstants.MoveStatusCode.TALKING_WITH_ELDER;
+
         }
 
         if (value >= GamePlayConstants.GameValueConstants.MONSTER_ID_BEGIN &&

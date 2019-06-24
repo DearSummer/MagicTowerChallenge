@@ -64,7 +64,7 @@ public class GamePlayConstants {
         public final static int UP_STAIR = 10;
         public final static int DOWN_STAIR =11;
 
-        public final static int IRON_SWORD = 51;
+        public final static int IRON_SWORD = 61;
 
         //--------------monster-----------------
         public final static int SKELETON = 12;
@@ -76,6 +76,9 @@ public class GamePlayConstants {
         public final static int MIDDLE_GUARD = 18;
         public final static int FRESHMAN_GUARD = 19;
         public final static int SKELETON_BOSS = 20;
+
+        //-------------npc----------------------
+        public final static int NPC_ELDER = 51;
 
         //-------------player-------------------
         public final static int HERO = 99;
@@ -152,6 +155,7 @@ public class GamePlayConstants {
                 put(STORE_LEFT,2);
                 put(STORE_RIGHT,3);
                 put(STORE_MID,16);
+                put(NPC_ELDER,47);
             }
         };
     }
@@ -159,6 +163,20 @@ public class GamePlayConstants {
     public static class HeroStatusCode{
         public final static int HERO_NORMAL = 0;
         public final static int HERO_FIGHTING = 1;
+    }
+
+    public static class NpcTalkingCode{
+        public final static int END = 2000;
+    }
+
+    public static class BattleCode{
+        public final static int CANT_ATK = -1;
+    }
+
+    public static class EquipmentCode{
+        public final static int BOOK_CLICK = 1;
+
+        public final static int BOOK = 10000;
     }
 
     public static class ShoppingStatusCode{
@@ -181,5 +199,8 @@ public class GamePlayConstants {
         public final static int FIGHT_DIE = 6;
         public final static int FIGHT_SUCCESS = 7;
         public final static int SHOPPING = 8;
+        public final static int TALKING_WITH_ELDER = 9;
     }
+
+
 }

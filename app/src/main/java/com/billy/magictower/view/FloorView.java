@@ -77,6 +77,11 @@ public class FloorView implements IGameView {
 
     }
 
+    public Bitmap getSprite(int value)
+    {
+        return sprite[value];
+    }
+
 
     @Override
     public void onDraw(Canvas lockCanvas, Paint paint) {
