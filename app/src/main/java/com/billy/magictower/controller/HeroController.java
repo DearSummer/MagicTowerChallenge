@@ -157,9 +157,8 @@ public class HeroController {
         return GamePlayConstants.MoveStatusCode.MOVE_SUCCESS_CODE;
     }
 
-    private int move(int i ,int j)
-    {
-        int value = floorController.getValueInMap(i,j);
+    private int move(int i ,int j) {
+        int value = floorController.getValueInMap(i, j);
         switch (value) {
             case GamePlayConstants.GameValueConstants.YELLOW_KEY:
                 heroAttribute.addYellowKey();
@@ -171,6 +170,42 @@ public class HeroController {
                     return GamePlayConstants.MoveStatusCode.NO_YELLOW_KEY;
                 }
                 break;
+            case GamePlayConstants.GameValueConstants.BLUE_KEY:
+                heroAttribute.addBlueKey();
+                break;
+            case GamePlayConstants.GameValueConstants.BLUE_DOOR:
+                if (heroAttribute.getBlueKey() > 0) {
+                    heroAttribute.setRedKey(heroAttribute.getBlueKey() - 1);
+                } else {
+                    return GamePlayConstants.MoveStatusCode.NO_BLUE_KEY;
+                }
+                break;
+            case GamePlayConstants.GameValueConstants.RED_DOOR:
+                if (heroAttribute.getRedKey() > 0) {
+                    heroAttribute.setRedKey(heroAttribute.getRedKey() - 1);
+                } else {
+                    return GamePlayConstants.MoveStatusCode.NO_RED_KEY;
+                }
+                break;
+            case GamePlayConstants.GameValueConstants.RED_KEY:
+                heroAttribute.addRedKey();
+                break;
+            case GamePlayConstants.GameValueConstants.BIG_BLOOD:
+                heroAttribute.setHp(heroAttribute.getHp() +
+                        (2 * GamePlayConstants.GameValueConstants.BASE_BLOOD_ATTRIBUTE * ((floorController.getCurrentFloor()) / 10 + 1)));
+                break;
+            case GamePlayConstants.GameValueConstants.LITTLE_BLOOD:
+                heroAttribute.setHp(heroAttribute.getHp() +
+                        (GamePlayConstants.GameValueConstants.BASE_BLOOD_ATTRIBUTE * ((floorController.getCurrentFloor()) / 10 + 1)));
+                break;
+            case GamePlayConstants.GameValueConstants.ATTACK_BUFF:
+                heroAttribute.setAtk(heroAttribute.getAtk() +
+                        (GamePlayConstants.GameValueConstants.BUFF_BASE_ATTRIBUTE * ((floorController.getCurrentFloor()) / 10 + 1)));
+                break;
+            case GamePlayConstants.GameValueConstants.DEFENSE_BUFF:
+                heroAttribute.setDef(heroAttribute.getDef() +
+                        (GamePlayConstants.GameValueConstants.BUFF_BASE_ATTRIBUTE * ((floorController.getCurrentFloor()) / 10 + 1)));
+                break;
             case GamePlayConstants.GameValueConstants.UP_STAIR:
                 floorController.upStairs();
                 findHeroLocation();
@@ -181,20 +216,19 @@ public class HeroController {
                 return GamePlayConstants.MoveStatusCode.MOVE_FLOOR;
         }
 
-        if(value >= GamePlayConstants.GameValueConstants.MONSTER_ID_BEGIN &&
-            value < GamePlayConstants.GameValueConstants.MONSTER_ID_END)
-        {
-            if(fight(value) != GamePlayConstants.MoveStatusCode.FIGHT_SUCCESS)
+        if (value >= GamePlayConstants.GameValueConstants.MONSTER_ID_BEGIN &&
+                value < GamePlayConstants.GameValueConstants.MONSTER_ID_END) {
+            if (fight(value) != GamePlayConstants.MoveStatusCode.FIGHT_SUCCESS)
                 return GamePlayConstants.MoveStatusCode.FIGHT_DIE;
         }
 
-        if(i - heroI > 0)
+        if (i - heroI > 0)
             heroSpriteId = GamePlayConstants.GameValueConstants.heroRight.get(random.nextInt(3));
-        else if(i - heroI < 0)
+        else if (i - heroI < 0)
             heroSpriteId = GamePlayConstants.GameValueConstants.heroLeft.get(random.nextInt(3));
-        else if(j - heroJ > 0)
+        else if (j - heroJ > 0)
             heroSpriteId = GamePlayConstants.GameValueConstants.heroForward.get(random.nextInt(3));
-        else if(j - heroJ < 0)
+        else if (j - heroJ < 0)
             heroSpriteId = GamePlayConstants.GameValueConstants.heroBack.get(random.nextInt(3));
 
         floorController.setValueInMap(heroI, heroJ, GamePlayConstants.GameValueConstants.GROUND);

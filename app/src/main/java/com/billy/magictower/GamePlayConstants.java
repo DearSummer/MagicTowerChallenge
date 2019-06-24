@@ -39,6 +39,7 @@ public class GamePlayConstants {
         //--------------key---------------------
         public final static int YELLOW_KEY = 3;
         public final static int BLUE_KEY = 81;
+        public final static int RED_KEY = 83;
 
         //--------------door--------------------
         public final static int BLUE_DOOR = 8;
@@ -46,6 +47,7 @@ public class GamePlayConstants {
         public final static int YELLOW_DOOR = 2;
         public final static int IRON_GATE = 80;
         public final static int HIDDEN_WALL = 82;
+        public final static int CONDITION_DOOR = 84;
 
         //--------------buff&drug----------------
         public final static int LITTLE_BLOOD = 4;
@@ -67,7 +69,8 @@ public class GamePlayConstants {
         public final static int GREEN_SLIME = 16;
         public final static int RED_SLIME = 17;
         public final static int MIDDLE_GUARD = 18;
-
+        public final static int FRESHMAN_GUARD = 19;
+        public final static int SKELETON_BOSS = 20;
 
         //-------------player-------------------
         public final static int HERO = 99;
@@ -77,6 +80,12 @@ public class GamePlayConstants {
         public final static int MONSTER_ID_END = 50;
 
         public final static int NEXT_FRAME_INDEX = 44;
+
+        //-------------attr-----------------------
+        public final static int BUFF_BASE_ATTRIBUTE = 1;
+        public final static int BASE_BLOOD_ATTRIBUTE = 50;
+        public final static int IRON_SWORD_ATK = 10;
+        public final static int IRON_SHIELD_DEF = 10;
 
         public final static List<Integer> heroForward = new ArrayList<Integer>(){{
            add(0);
@@ -131,6 +140,10 @@ public class GamePlayConstants {
                 put(BLUE_KEY,19);
                 put(HIDDEN_WALL,1);
                 put(IRON_SWORD,26);
+                put(RED_KEY,20);
+                put(CONDITION_DOOR,4);
+                put(FRESHMAN_GUARD,61);
+                put(SKELETON_BOSS,58);
             }
         };
     }

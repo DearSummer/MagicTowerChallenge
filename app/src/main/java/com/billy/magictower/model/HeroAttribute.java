@@ -33,7 +33,7 @@ public class HeroAttribute {
         redKey++;
     }
 
-    public void blueKey()
+    public void addBlueKey()
     {
         blueKey++;
     }

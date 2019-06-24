@@ -82,26 +82,31 @@ public class FloorView implements IGameView {
     public void onDraw(Canvas lockCanvas, Paint paint) {
         FloorMap map = floorController.getMap();
 
-        for(int i = 0;i < map.getMap().length / GamePlayConstants.MAP_WIDTH;i++)
-        {
-            for(int j = 0;j < GamePlayConstants.MAP_WIDTH;j++) {
+        for (int i = 0; i < map.getMap().length / GamePlayConstants.MAP_WIDTH; i++) {
+            for (int j = 0; j < GamePlayConstants.MAP_WIDTH; j++) {
                 int width = lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH;
                 matrix.setTranslate(
                         ((float) lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_WIDTH,
                         ((float) lockCanvas.getWidth() / GamePlayConstants.MAP_WIDTH) / GamePlayConstants.GameResConstants.MAP_META_HEIGHT);
                 matrix.postTranslate(j * width, i * width);
                 if (map.getMap()[i * GamePlayConstants.MAP_WIDTH + j] != GamePlayConstants.GameValueConstants.HERO)
-                    drawElement(lockCanvas,
-                            GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
-                            paint);
+                    if (map.getMap()[i * GamePlayConstants.MAP_WIDTH + j] >= GamePlayConstants.GameValueConstants.MONSTER_ID_BEGIN &&
+                            map.getMap()[i * GamePlayConstants.MAP_WIDTH + j] < GamePlayConstants.GameValueConstants.MONSTER_ID_END) {
+                        drawSpriteAnimation(lockCanvas,
+                                GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
+                                paint);
+                    } else {
+                        drawElement(lockCanvas,
+                                GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
+                                paint);
+                    }
                 else {
                     drawElement(lockCanvas,
                             GamePlayConstants.GameValueConstants.valueMap.get(GamePlayConstants.GameValueConstants.GROUND),
                             paint);
                     drawHero(lockCanvas, heroController.getSpriteId(), paint);
-                    if(heroController.heroStatus() == GamePlayConstants.HeroStatusCode.HERO_FIGHTING)
-                    {
-                        drawHero(lockCanvas,heroController.getParticleId(),paint);
+                    if (heroController.heroStatus() == GamePlayConstants.HeroStatusCode.HERO_FIGHTING) {
+                        drawHero(lockCanvas, heroController.getParticleId(), paint);
                     }
                 }
             }
@@ -113,6 +118,21 @@ public class FloorView implements IGameView {
         return sprite[0].getWidth();
     }
 
+    private int frame = 0;
+    private void drawSpriteAnimation(Canvas canvas,int id,Paint paint) {
+
+        if (frame / 50 == 0) {
+            canvas.drawBitmap(sprite[id], matrix, paint);
+
+        } else {
+            canvas.drawBitmap(sprite[id + GamePlayConstants.GameValueConstants.NEXT_FRAME_INDEX], matrix, paint);
+            if (frame / 50 == 2)
+                frame = 0;
+        }
+
+        frame++;
+    }
+
 
     private void drawHero(Canvas canvas,int id,Paint paint) {
         if (id == GamePlayConstants.GameValueConstants.PARTICLE_NOT_NEED_SHOW)
@@ -121,9 +141,8 @@ public class FloorView implements IGameView {
     }
 
 
-    private void drawElement(Canvas canvas,int id,Paint paint)
-    {
-        canvas.drawBitmap(sprite[id],matrix,paint);
+    private void drawElement(Canvas canvas,int id,Paint paint) {
+        canvas.drawBitmap(sprite[id], matrix, paint);
     }
 
     @Override

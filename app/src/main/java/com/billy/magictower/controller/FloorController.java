@@ -60,6 +60,12 @@ public class FloorController {
         level--;
     }
 
+    public int getCurrentFloor()
+    {
+        return level;
+    }
+
+
     public int getValueInMap(int i,int j)
     {
         return localMap[level].getMap()[j * GamePlayConstants.MAP_WIDTH + i];
