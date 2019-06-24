@@ -49,6 +49,11 @@ public class GamePlayConstants {
         public final static int HIDDEN_WALL = 82;
         public final static int CONDITION_DOOR = 84;
 
+        //-------------store---------------------
+        public final static int STORE_LEFT = 85;
+        public final static int STORE_RIGHT = 86;
+        public final static int STORE_MID = 87;
+
         //--------------buff&drug----------------
         public final static int LITTLE_BLOOD = 4;
         public final static int BIG_BLOOD = 5;
@@ -144,6 +149,9 @@ public class GamePlayConstants {
                 put(CONDITION_DOOR,4);
                 put(FRESHMAN_GUARD,61);
                 put(SKELETON_BOSS,58);
+                put(STORE_LEFT,2);
+                put(STORE_RIGHT,3);
+                put(STORE_MID,16);
             }
         };
     }
@@ -151,6 +159,15 @@ public class GamePlayConstants {
     public static class HeroStatusCode{
         public final static int HERO_NORMAL = 0;
         public final static int HERO_FIGHTING = 1;
+    }
+
+    public static class ShoppingStatusCode{
+        public final static int ATK = 0;
+        public final static int DEF = 1;
+        public final static int HP = 2;
+        public final static int NOT_NEED = 3;
+        public final static int MONEY_NOT_ENOUGH = 1000;
+        public final static int BUY_SUCCESS = 1001;
     }
 
     public static class MoveStatusCode
@@ -163,5 +180,6 @@ public class GamePlayConstants {
         public final static int MOVE_FLOOR = 5;
         public final static int FIGHT_DIE = 6;
         public final static int FIGHT_SUCCESS = 7;
+        public final static int SHOPPING = 8;
     }
 }

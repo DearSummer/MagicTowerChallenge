@@ -135,8 +135,7 @@ public class HeroController {
         if(!canMoveTo)
             return GamePlayConstants.MoveStatusCode.CANT_REACH;
         AStarNode start = new AStarNode(heroI, heroJ, true);
-        AStarNode end = new AStarNode(i, j,
-                floorController.getValueInMap(i, j) == GamePlayConstants.GameValueConstants.GROUND);
+        AStarNode end = new AStarNode(i, j, true);
         List<AStarNode> road = findPath(start, end);
         if (road == null) {
             return GamePlayConstants.MoveStatusCode.CANT_REACH;
@@ -214,6 +213,10 @@ public class HeroController {
                 floorController.downStairs();
                 findHeroLocation();
                 return GamePlayConstants.MoveStatusCode.MOVE_FLOOR;
+            case GamePlayConstants.GameValueConstants.STORE_LEFT:
+            case GamePlayConstants.GameValueConstants.STORE_MID:
+            case GamePlayConstants.GameValueConstants.STORE_RIGHT:
+                return GamePlayConstants.MoveStatusCode.SHOPPING;
         }
 
         if (value >= GamePlayConstants.GameValueConstants.MONSTER_ID_BEGIN &&

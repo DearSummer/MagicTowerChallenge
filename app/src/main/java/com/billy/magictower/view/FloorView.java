@@ -95,6 +95,10 @@ public class FloorView implements IGameView {
                         drawSpriteAnimation(lockCanvas,
                                 GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
                                 paint);
+                    } else if (map.getMap()[i * GamePlayConstants.MAP_WIDTH + j] == GamePlayConstants.GameValueConstants.STORE_MID) {
+                        drawSceneAnimation(lockCanvas,
+                                GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
+                                paint);
                     } else {
                         drawElement(lockCanvas,
                                 GamePlayConstants.GameValueConstants.valueMap.get(map.getMap()[i * GamePlayConstants.MAP_WIDTH + j]),
@@ -132,6 +136,22 @@ public class FloorView implements IGameView {
 
         frame++;
     }
+
+    public void drawSceneAnimation(Canvas canvas,int id,Paint paint)
+    {
+
+        if (frame / 50 == 0) {
+            canvas.drawBitmap(sprite[id], matrix, paint);
+
+        } else {
+            canvas.drawBitmap(sprite[id + 1], matrix, paint);
+            if (frame / 50 == 2)
+                frame = 0;
+        }
+
+        frame++;
+    }
+
 
 
     private void drawHero(Canvas canvas,int id,Paint paint) {
