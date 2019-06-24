@@ -34,16 +34,31 @@ public class EquipmentController extends TalkingBaseController {
         for (int i = 0; i < floorController.getMap().getMap().length; i++) {
             if (floorController.getMap().getMap()[i] >= GamePlayConstants.GameValueConstants.MONSTER_ID_BEGIN &&
                     floorController.getMap().getMap()[i] < GamePlayConstants.GameValueConstants.MONSTER_ID_END) {
-                monsterManualList.add(
-                        new MonsterManual(
-                                GamePlayConstants.GameValueConstants.valueMap.get(floorController.getMap().getMap()[i]),
-                                heroController.getMonster(floorController.getMap().getMap()[i]),
-                                calculeLoseBlood(heroController.getMonster(floorController.getMap().getMap()[i]))));
+                if (!hasContainId(
+                        GamePlayConstants.GameValueConstants.valueMap.get(floorController.getMap().getMap()[i])))
+                {
+                    monsterManualList.add(
+                            new MonsterManual(
+                                    GamePlayConstants.GameValueConstants.valueMap.get(floorController.getMap().getMap()[i]),
+                                    heroController.getMonster(floorController.getMap().getMap()[i]),
+                                    calculateLoseBlood(heroController.getMonster(floorController.getMap().getMap()[i]))));
+                }
             }
         }
     }
 
-    private int calculeLoseBlood(MonsterAttribute monsterAttribute)
+    private boolean hasContainId(int id)
+    {
+        for(int i = 0;i < monsterManualList.size();i++)
+        {
+            if(monsterManualList.get(i).getSpriteId() == id)
+                return true;
+        }
+
+        return false;
+    }
+
+    private int calculateLoseBlood(MonsterAttribute monsterAttribute)
     {
         HeroAttribute heroAttribute = heroController.getHeroAttribute();
         int monsterHp = monsterAttribute.getHp(), monsterAtk = monsterAttribute.getAtk(),

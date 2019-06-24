@@ -1,7 +1,7 @@
 {
   "hp": 1000,
-  "atk": 100,
-  "def": 100,
+  "atk": 10,
+  "def": 10,
   "yellowKey": 100,
   "blueKey": 100,
   "redKey": 100,

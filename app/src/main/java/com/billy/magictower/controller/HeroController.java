@@ -218,7 +218,8 @@ public class HeroController {
     {
         MonsterAttribute enemy = monsterMap.get(monster);
         assert enemy != null;
-        while(enemy.getHp() >= 0)
+        int enemyHp = enemy.getHp();
+        while(enemyHp >= 0)
         {
             heroStatus = GamePlayConstants.HeroStatusCode.HERO_FIGHTING;
             particleId = GamePlayConstants.GameValueConstants.fightingParticle.get(random.nextInt(
@@ -227,7 +228,7 @@ public class HeroController {
             int heroDamage = heroAttribute.getAtk() - enemy.getDef();
             if(heroDamage < 0)
                 heroDamage = 0;
-            enemy.setHp(enemy.getHp() - heroDamage);
+            enemyHp -= heroDamage;
 
             int enemyDamage = enemy.getAtk() - heroAttribute.getDef();
             if(enemyDamage < 0)

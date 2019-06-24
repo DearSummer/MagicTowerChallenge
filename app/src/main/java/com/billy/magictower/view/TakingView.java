@@ -84,8 +84,8 @@ public class TakingView implements IGameView {
 
     private void drawMonsterManual(Canvas canvas,List<MonsterManual> monsterManualList,Paint paint)
     {
-        float left = GamePlayConstants.GameResConstants.MAP_META_WIDTH * 2;
-        float top = GamePlayConstants.GameResConstants.MAP_META_HEIGHT * 2;
+        float left = GamePlayConstants.GameResConstants.MAP_META_WIDTH * 1.5f;
+        float top = GamePlayConstants.GameResConstants.MAP_META_HEIGHT ;
         for(int i = 0;i < monsterManualList.size();i++) {
             top += GamePlayConstants.GameResConstants.MAP_META_HEIGHT * 4f;
             canvas.drawBitmap(floorView.getSprite(monsterManualList.get(i).getSpriteId()),
