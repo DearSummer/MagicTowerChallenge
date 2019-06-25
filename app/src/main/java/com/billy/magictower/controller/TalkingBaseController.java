@@ -1,6 +1,6 @@
 package com.billy.magictower.controller;
 
-public class TalkingBaseController {
+public class TalkingBaseController implements  IController{
     private boolean isShow = false;
 
     public void start()
@@ -20,4 +20,13 @@ public class TalkingBaseController {
         return isShow;
     }
 
+    @Override
+    public void save() {
+
+    }
+
+    @Override
+    public void load() {
+
+    }
 }

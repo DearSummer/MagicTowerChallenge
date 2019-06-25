@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.billy.magictower.GameManager;
 import com.billy.magictower.GamePlayConstants;
 import com.billy.magictower.R;
 import com.billy.magictower.controller.EquipmentController;
@@ -48,7 +49,7 @@ public class GameActivity extends MTBaseActivity {
 
         floorController = new FloorController(this);
         heroController = new HeroController(this, floorController);
-        shoppingController = new ShoppingController(heroController, floorController);
+        shoppingController = new ShoppingController(this,heroController, floorController);
         storyController = new StoryController(this,heroController);
         equipmentController = new EquipmentController(heroController,floorController);
 
@@ -56,6 +57,18 @@ public class GameActivity extends MTBaseActivity {
         heroStatusView = new HeroStatusView(this, heroController);
         takingView = new TakingView(this,storyController,shoppingController,equipmentController,floorView);
 
+
+        GameManager.getInstance().register(floorController);
+        GameManager.getInstance().register(heroController);
+        GameManager.getInstance().register(shoppingController);
+        GameManager.getInstance().register(storyController);
+        GameManager.getInstance().register(equipmentController);
+
+        int code = getIntent().getIntExtra("code",GamePlayConstants.GameStatusCode.NEW_GAME);
+        if(code == GamePlayConstants.GameStatusCode.LOAD_GAME)
+        {
+            GameManager.getInstance().load();
+        }
 
         mainGameView = findViewById(R.id.gv_main);
         mainGameView.register(floorView);
@@ -127,5 +140,6 @@ public class GameActivity extends MTBaseActivity {
     @Override
     public void onExit() {
         mainGameView.exitGame();
+        GameManager.getInstance().save();
     }
 }

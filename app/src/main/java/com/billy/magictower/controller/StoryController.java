@@ -47,6 +47,7 @@ public class StoryController extends TalkingBaseController {
     {
         super.end();
         NpcStory localStory = getStory();
+        heroController.getHeroAttribute().setHasEquipment(true);
         heroController.addEquipment(localStory.getGif());
 
     }

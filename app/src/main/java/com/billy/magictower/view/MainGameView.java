@@ -101,11 +101,11 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback,
 
     public void exitGame()
     {
+        playing = false;
         for(IGameView view : gameViewList)
         {
             view.onExit();
         }
-        playing = false;
     }
 
     private void logic()
@@ -118,6 +118,8 @@ public class MainGameView extends SurfaceView implements SurfaceHolder.Callback,
     private void draw()
     {
         Canvas canvas = holder.lockCanvas();
+        if(canvas == null)
+            return;
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         canvas.drawColor(Color.WHITE);
         for(IGameView view : gameViewList)

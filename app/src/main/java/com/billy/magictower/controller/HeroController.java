@@ -10,6 +10,7 @@ import com.billy.magictower.model.HeroAttribute;
 import com.billy.magictower.model.Monster;
 import com.billy.magictower.model.MonsterAttribute;
 import com.billy.magictower.util.ApplicationUtil;
+import com.billy.magictower.util.IOUtil;
 import com.billy.magictower.util.JsonUtil;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.Random;
 
 
-public class HeroController {
+public class HeroController implements IController {
 
 
     private HeroAttribute heroAttribute;
@@ -387,4 +388,20 @@ public class HeroController {
     }
 
 
+    @Override
+    public void save() {
+        heroAttribute.setCurLevel(floorController.getCurrentFloor());
+        IOUtil.save(heroAttribute,"user_heroAttr.json");
+    }
+
+    @Override
+    public void load() {
+        heroAttribute = IOUtil.load("user_heroAttr.json",HeroAttribute.class);
+        floorController.setLevel(heroAttribute.getCurLevel());
+        if(heroAttribute.isHasEquipment())
+        {
+            equipmentList.add(1);
+        }
+        findHeroLocation();
+    }
 }

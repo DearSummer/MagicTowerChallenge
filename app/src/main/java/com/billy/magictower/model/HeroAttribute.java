@@ -8,6 +8,36 @@ public class HeroAttribute {
     private int blueKey;
     private int redKey;
     private int coin;
+    private int curLevel;
+    private boolean hasEquipment;
+
+    public HeroAttribute(int hp, int atk, int def, int yellowKey, int blueKey, int redKey, int coin, int curLevel, boolean hasEquipment) {
+        this.hp = hp;
+        this.atk = atk;
+        this.def = def;
+        this.yellowKey = yellowKey;
+        this.blueKey = blueKey;
+        this.redKey = redKey;
+        this.coin = coin;
+        this.curLevel = curLevel;
+        this.hasEquipment = hasEquipment;
+    }
+
+    public int getCurLevel() {
+        return curLevel;
+    }
+
+    public void setCurLevel(int curLevel) {
+        this.curLevel = curLevel;
+    }
+
+    public boolean isHasEquipment() {
+        return hasEquipment;
+    }
+
+    public void setHasEquipment(boolean hasEquipment) {
+        this.hasEquipment = hasEquipment;
+    }
 
     public HeroAttribute()
     {

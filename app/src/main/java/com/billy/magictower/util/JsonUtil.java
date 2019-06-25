@@ -66,7 +66,7 @@ public class JsonUtil {
 
 
 
-    public static String toJson(FloorMap[] map)
+    public static <T> String toJson(T map)
     {
         return gson.toJson(map);
     }
